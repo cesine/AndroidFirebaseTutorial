@@ -3,7 +3,9 @@ package com.example.android.basicsyncadapter.tests;
 import android.annotation.TargetApi;
 import android.test.ActivityInstrumentationTestCase2;
 
+import com.example.android.basicsyncadapter.BuildConfig;
 import com.example.android.basicsyncadapter.EntryListActivity;
+import com.firebase.client.Firebase;
 
 public class TestFirebaseReadWrite extends ActivityInstrumentationTestCase2<EntryListActivity> {
 
@@ -32,7 +34,13 @@ public class TestFirebaseReadWrite extends ActivityInstrumentationTestCase2<Entr
     }
 
     public void testFirebaseWrite() {
-        assertEquals("one", "two");
+        Firebase myFirebaseRef = new Firebase(BuildConfig.FIREBASE_URL);
+
+        final String valueToWrite = "one";
+
+        assertEquals(valueToWrite, "one");
+
+        myFirebaseRef.child("message").setValue(valueToWrite);
     }
 
 }
