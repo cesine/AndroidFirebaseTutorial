@@ -30,6 +30,7 @@ import com.couchbase.todolite.document.List;
 import com.couchbase.todolite.document.Profile;
 import com.couchbase.todolite.preferences.ToDoLitePreferences;
 import com.couchbase.todolite.ui.login.LoginActivity;
+import com.firebase.client.Firebase;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 
 import java.io.IOException;
@@ -66,6 +67,8 @@ public class MainActivity extends BaseActivity implements ListAdapter.OnItemClic
     protected void onCreate(Bundle savedInstanceState) {
         requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
         super.onCreate(savedInstanceState);
+        Firebase.setAndroidContext(this);
+
         this.preferences = new ToDoLitePreferences(getApplication());
         setContentView(R.layout.activity_main);
         mToggleGCM = (SwitchCompat) findViewById(R.id.toggleGCM);
