@@ -31,4 +31,8 @@ public class TestFirebaseReadWrite extends ActivityInstrumentationTestCase2<Entr
         assertNotNull("mTestActivity is null", mTestActivity);
     }
 
+    public void testFirebaseWrite() {
+        assertEquals("one", "two");
+    }
+
 }
