@@ -15,6 +15,11 @@ import com.couchbase.lite.Query;
 import com.couchbase.lite.UnsavedRevision;
 import com.couchbase.lite.util.Log;
 import com.couchbase.todolite.Application;
+import com.couchbase.todolite.BuildConfig;
+import com.firebase.client.DataSnapshot;
+import com.firebase.client.Firebase;
+import com.firebase.client.FirebaseError;
+import com.firebase.client.ValueEventListener;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -77,6 +82,7 @@ public class Task {
 
         UnsavedRevision revision = document.createRevision();
         revision.setUserProperties(properties);
+        saveToFiredatabase(revision);
 
         if (image != null) {
             ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -116,6 +122,32 @@ public class Task {
     public static void deleteTask(Document task) throws CouchbaseLiteException {
         task.delete();
         Log.d(Application.TAG, "Deleted doc: %s", task.getId());
+    }
 
+    public static void saveToFiredatabase(UnsavedRevision revision) {
+        Firebase myFirebaseRef = new Firebase(BuildConfig.FIREBASE_URL);
+
+        final String keyToWrite = revision.getDocument().getId();
+        myFirebaseRef.child(keyToWrite).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                Log.d("Firebase Demo", "snapshot.getValue() " + snapshot.getValue());
+            }
+
+            @Override
+            public void onCancelled(FirebaseError error) {
+            }
+        });
+
+        myFirebaseRef.child(keyToWrite).setValue(revision.getProperties(), new Firebase.CompletionListener() {
+            @Override
+            public void onComplete(FirebaseError firebaseError, Firebase firebase) {
+                if (firebaseError != null) {
+                    Log.e("Firebase Demo", "Data could not be saved. " + firebaseError.getMessage());
+                } else {
+                    Log.d("Firebase Demo", "Data saved successfully.");
+                }
+            }
+        });
     }
 }
