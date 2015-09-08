@@ -35,6 +35,8 @@ import com.couchbase.lite.LiveQuery;
 import com.couchbase.lite.SavedRevision;
 import com.couchbase.lite.util.Log;
 import com.couchbase.todolite.document.Task;
+import com.couchbase.todolite.document.TaskModel;
+import com.couchbase.todolite.helper.FirebaseQueryAdapter;
 import com.couchbase.todolite.helper.ImageHelper;
 import com.couchbase.todolite.helper.LiveQueryAdapter;
 
@@ -412,9 +414,9 @@ public class TasksFragment extends Fragment {
         }
     }
 
-    private class TaskAdapter extends LiveQueryAdapter {
+    private class TaskAdapter extends FirebaseQueryAdapter {
         public TaskAdapter(Context context, LiveQuery query) {
-            super(context, query);
+            super(context);
         }
 
         @Override
@@ -425,7 +427,23 @@ public class TasksFragment extends Fragment {
                 convertView = inflater.inflate(R.layout.view_task, null);
             }
 
-            final Document task = (Document) getItem(position);
+             TaskModel model = (TaskModel) getItem(position);
+
+            Map<String, Object> docContent = new HashMap<String, Object>();
+
+            docContent.put("_id", model.get_id());
+            docContent.put("list_id", model.getList_id());
+            docContent.put("created_at", model.getCreated_at());
+            docContent.put("checked", model.isChecked());
+            docContent.put("title", model.getTitle());
+            docContent.put("type", model.getType());
+
+            final Document task = getDatabase().createDocument();
+            try {
+                task.putProperties(docContent);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
 
             if (task == null || task.getCurrentRevision() == null) {
                 return convertView;
