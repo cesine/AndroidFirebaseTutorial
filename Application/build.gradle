@@ -15,6 +15,16 @@ repositories {
     jcenter()
 }
 
+/*
+Set up API key so it remains private
+ */
+Properties privateProperties = new Properties()
+privateProperties.load(project.rootProject.file('local.properties').newDataInputStream())
+def FIREBASE_URL = '"' + privateProperties.getProperty("FIREBASE_URL") + '"' ?: '"You should define your private firebase url in local.properties file"';
+android.buildTypes.each { type ->;
+    type.buildConfigField 'String', 'FIREBASE_URL', FIREBASE_URL
+}
+
 dependencies {
     compile "com.android.support:support-v4:23.0.0"
     compile "com.android.support:gridlayout-v7:23.0.0"
