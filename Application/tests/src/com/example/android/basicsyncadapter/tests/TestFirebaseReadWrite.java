@@ -5,7 +5,10 @@ import android.test.ActivityInstrumentationTestCase2;
 
 import com.example.android.basicsyncadapter.BuildConfig;
 import com.example.android.basicsyncadapter.EntryListActivity;
+import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
+import com.firebase.client.FirebaseError;
+import com.firebase.client.ValueEventListener;
 
 public class TestFirebaseReadWrite extends ActivityInstrumentationTestCase2<EntryListActivity> {
 
@@ -37,8 +40,16 @@ public class TestFirebaseReadWrite extends ActivityInstrumentationTestCase2<Entr
         Firebase myFirebaseRef = new Firebase(BuildConfig.FIREBASE_URL);
 
         final String valueToWrite = "one";
+        myFirebaseRef.child("message").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                assertEquals(snapshot.getValue(), "one");
+            }
 
-        assertEquals(valueToWrite, "one");
+            @Override
+            public void onCancelled(FirebaseError error) {
+            }
+        });
 
         myFirebaseRef.child("message").setValue(valueToWrite);
     }
