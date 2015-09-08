@@ -6,6 +6,7 @@ import android.util.Log;
 
 import com.example.android.basicsyncadapter.BuildConfig;
 import com.example.android.basicsyncadapter.EntryListActivity;
+import com.firebase.client.AuthData;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 
@@ -58,6 +59,45 @@ public class TestFirebaseRegisterUsers extends ActivityInstrumentationTestCase2<
             }
         });
 
+    }
+
+    public void testFirebaseAuthUserWithPassword() {
+        Firebase myFirebaseRef = new Firebase(BuildConfig.FIREBASE_URL);
+        myFirebaseRef.authWithPassword("bobtony@firebase.com", "correcthorsebatterystaple", new Firebase.AuthResultHandler() {
+            @Override
+            public void onAuthenticated(AuthData authData) {
+                Log.d(TestFirebaseRegisterUsers.class.getSimpleName(), "User ID: " + authData.getUid() + ", Provider: " + authData.getProvider());
+                assertNotNull(authData.getUid());
+                assertEquals("password", authData.getProvider());
+                assertEquals(36, authData.getUid().length());
+            }
+
+            @Override
+            public void onAuthenticationError(FirebaseError firebaseError) {
+                Log.e(TestFirebaseRegisterUsers.class.getSimpleName(), firebaseError.getDetails());
+                Log.e(TestFirebaseRegisterUsers.class.getSimpleName(), firebaseError.getMessage());
+                assertEquals("User should have been logged in.", false);
+            }
+        });
+    }
+
+    public void testFirebaseAuthUserWithWrongPassword() {
+        Firebase myFirebaseRef = new Firebase(BuildConfig.FIREBASE_URL);
+        myFirebaseRef.authWithPassword("bobtony@firebase.com", "wrongpassword", new Firebase.AuthResultHandler() {
+            @Override
+            public void onAuthenticated(AuthData authData) {
+                Log.d(TestFirebaseRegisterUsers.class.getSimpleName(), "User ID: " + authData.getUid() + ", Provider: " + authData.getProvider());
+                assertEquals("User should not have been logged in.", false);
+            }
+
+            @Override
+            public void onAuthenticationError(FirebaseError firebaseError) {
+                Log.e(TestFirebaseRegisterUsers.class.getSimpleName(), "firebaseError.getCode() " + firebaseError.getCode());
+                Log.e(TestFirebaseRegisterUsers.class.getSimpleName(), "firebaseError.getMessage() " + firebaseError.getMessage());
+                assertEquals(-16, firebaseError.getCode());
+                assertTrue(firebaseError.getMessage().contains("The specified password is incorrect"));
+            }
+        });
     }
 
 }
