@@ -1,5 +1,16 @@
 apply plugin: 'android'
 
+
+/*
+Set up API key so it remains private
+ */
+Properties privateProperties = new Properties()
+privateProperties.load(project.rootProject.file('local.properties').newDataInputStream())
+def FIREBASE_URL = '"' + privateProperties.getProperty("FIREBASE_URL") + '"' ?: '"You should define your private firebase url in local.properties file"';
+android.buildTypes.each { type ->;
+    type.buildConfigField 'String', 'FIREBASE_URL', FIREBASE_URL
+}
+
 android {
     Properties properties = new Properties()
     properties.load(project.rootProject.file('local.properties').newDataInputStream())
