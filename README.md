@@ -55,9 +55,9 @@ $ echo FIREBASE_URL=https://YOUR_DATABASE_IDENTIFIER.firebaseio.com >> local.pro
 
 ## Testing Firebase
 
-Want to see how to do something? You can write a unit test to contact firebase. There are a few tests in the DemoSyncAdapter project.
+Want to see how to do something? You can write a unit test to contact firebase. There are a few tests in the [DemoSyncAdapter](https://github.com/cesine/AndroidFirebaseTutorial/tree/master/DemoSyncAdapter/tests/src/com/example/android/basicsyncadapter/tests) project.
 
-1. Open the DemoSyncAdapter project in Android Studio
+1. Open the [DemoSyncAdapter](DemoSyncAdapter/) directory in Android Studio
 <img width="528" alt="screen shot 2015-09-10 at 10 07 38 am" src="https://cloud.githubusercontent.com/assets/196199/9790400/d5a2e5ec-57a3-11e5-81da-b1c6ca0cb305.png">
 
 
